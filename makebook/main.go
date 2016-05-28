@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type filters []string
@@ -26,24 +28,29 @@ func usage() {
 	flag.PrintDefaults()
 }
 
-func params() ([]string, *filters) {
+func params() ([]string, *filters, int) {
 	var f filters
 	flag.Var(&f, "f", "filters to apply to a pgn")
+	var moves int
+	flag.IntVar(&moves, "m", 14, "number of moves to include in the book")
+
 	flag.Parse()
 	flag.Usage = usage
 	if len(flag.Args()) == 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
-	return flag.Args(), &f
+	return flag.Args(), &f, moves
 }
 
 func main() {
-	p, f := params()
-	fmt.Println("Using:")
-	fmt.Println("  PGN File(s):")
+	p, f, m := params()
+	fmt.Println("PGN File(s):")
 	for _, pgn := range p {
 		fmt.Print("\t", pgn, "\n")
 	}
-	fmt.Println("  Filter(s):  \n", f)
+	outfile := strings.TrimSuffix(filepath.Base(p[0]), ".pgn") + ".bin"
+	err := makeBook(p, f, m, outfile)
+	handle(err)
+	fmt.Println("Made", outfile)
 }
