@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$( dirname "$0" )"
 
-packages=$(find . -type d | tail -n +2 |grep -v "git\|bin")
+packages=$(find . -type d | tail -n +2 |grep -v "git\|releases\|bin")
 
 IFS=$'\n'
 for pkg in $packages; do
