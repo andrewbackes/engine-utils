@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/andrewbackes/engine-utils.svg?branch=master)](https://travis-ci.org/andrewbackes/engine-utils)[![Coverage Status](https://coveralls.io/repos/github/andrewbackes/engine-utils/badge.svg?branch=master)](https://coveralls.io/github/andrewbackes/engine-utils?branch=master)
+
 # Engine-utils
 Compilation of utilities for testing and creating chess engines.
 
