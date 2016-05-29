@@ -6,6 +6,7 @@ go:
 install:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
+  - go list -f '{{range .TestImports}}{{.}}\n{{end}}' PACKAGE | xargs go get 
   
 script:
   - ./test.sh

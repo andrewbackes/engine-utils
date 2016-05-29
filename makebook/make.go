@@ -15,22 +15,32 @@ func handle(err error) {
 	}
 }
 
-func makeBook(pgn []string, f *filters, moves int, outfile string) error {
+func makeBook(pgn []string, f *filters, moves int, outfile string) {
 	filts := parseFilters(f)
 	if len(filts) != len(*f) {
 		handle(errors.New("could not parse filters"))
 	}
-	fmt.Println(len(filts), "filters.")
+	fmt.Println(len(filts), "filters.\n")
 
+	// open
+	fmt.Print("Opening PGN(s)... ")
 	pgns, err := openPGNs(pgn)
 	handle(err)
-	fmt.Println("Found", len(pgns), "games in PGN(s).")
-
+	fmt.Println("Found", len(pgns), "games.")
+	// filter
+	fmt.Print("Filtering... ")
 	filtered := chess.FilterPGNs(pgns, filts...)
+	fmt.Println("done")
+	// convert
+	fmt.Print("Creating opening book... ")
 	b, err := book.FromPGN(filtered, moves*2)
 	handle(err)
+	fmt.Println("done")
+	// save
+	fmt.Print("Saving... ")
 	handle(b.Save(outfile))
-	return nil
+	fmt.Println("made", outfile)
+
 }
 
 func parseFilters(f *filters) []chess.TagFilter {

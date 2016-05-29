@@ -50,7 +50,5 @@ func main() {
 		fmt.Print("\t", pgn, "\n")
 	}
 	outfile := strings.TrimSuffix(filepath.Base(p[0]), ".pgn") + ".bin"
-	err := makeBook(p, f, m, outfile)
-	handle(err)
-	fmt.Println("Made", outfile)
+	makeBook(p, f, m, outfile)
 }
