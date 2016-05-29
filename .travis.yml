@@ -6,7 +6,8 @@ go:
 install:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
-  - go list -f '{{range .TestImports}}{{.}}\n{{end}}' PACKAGE | xargs go get 
+  - go get github.com/andrewbackes/chess
+  - go get github.com/andrewbackes/chess/book
   
 script:
   - ./test.sh
