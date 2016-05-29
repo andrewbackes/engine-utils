@@ -20,7 +20,8 @@ func makeBook(pgn []string, f *filters, moves int, outfile string) {
 	if len(filts) != len(*f) {
 		handle(errors.New("could not parse filters"))
 	}
-	fmt.Println(len(filts), "filters.\n")
+	fmt.Println(len(filts), "filters.")
+	fmt.Println()
 
 	// open
 	fmt.Print("Opening PGN(s)... ")
