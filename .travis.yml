@@ -8,6 +8,8 @@ install:
   - go get github.com/mattn/goveralls
   - go get github.com/andrewbackes/chess/pgn
   - go get github.com/andrewbackes/chess/book
+  - go get github.com/andrewbackes/chess/epd
+  - go get github.com/andrewbackes/chess/engines
   
 script:
   - ./test.sh
