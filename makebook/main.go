@@ -45,7 +45,7 @@ func params() ([]string, *filters, int) {
 
 func main() {
 	p, f, m := params()
-	fmt.Println("PGN File(s):")
+	fmt.Println("\nMakebook will create a polyglot opening book from:")
 	for _, pgn := range p {
 		fmt.Print("\t", pgn, "\n")
 	}

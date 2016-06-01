@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/andrewbackes/chess"
 	"github.com/andrewbackes/chess/book"
+	"github.com/andrewbackes/chess/pgn"
 	"os"
+	"time"
 )
 
 func handle(err error) {
@@ -15,57 +16,60 @@ func handle(err error) {
 	}
 }
 
-func makeBook(pgn []string, f *filters, moves int, outfile string) {
+func makeBook(pgnFiles []string, f *filters, moves int, outfile string) {
+	start := time.Now()
 	filts := parseFilters(f)
 	if len(filts) != len(*f) {
 		handle(errors.New("could not parse filters"))
 	}
-	fmt.Println(len(filts), "filters.")
-	fmt.Println()
+	fmt.Println("with", len(filts), "filters:")
+	for _, f := range filts {
+		fmt.Println("\t", f)
+	}
 
 	// open
 	fmt.Print("Opening PGN(s)... ")
-	pgns, err := openPGNs(pgn)
+	pgns, err := openPGNs(pgnFiles)
 	handle(err)
-	fmt.Println("Found", len(pgns), "games.")
+	fmt.Println("found", len(pgns), "games.")
 	// filter
 	fmt.Print("Filtering... ")
-	filtered := chess.FilterPGNs(pgns, filts...)
-	fmt.Println("done")
+	filtered := pgn.Filter(pgns, filts...)
+	fmt.Println(len(filtered), "games remain.")
 	// convert
-	fmt.Print("Creating opening book... ")
+	fmt.Print("Converting to polyglot... ")
 	b, err := book.FromPGN(filtered, moves*2)
 	handle(err)
-	fmt.Println("done")
+	fmt.Println(len(b.Positions), "unique positions.")
 	// save
-	fmt.Print("Saving... ")
 	handle(b.Save(outfile))
-	fmt.Println("made", outfile)
-
+	lapsed := time.Now().Sub(start)
+	fmt.Println("\nCreated", outfile, "in", lapsed)
 }
 
-func parseFilters(f *filters) []chess.TagFilter {
-	var filts []chess.TagFilter
+func parseFilters(f *filters) []pgn.Filterer {
+	var filts []pgn.Filterer
 	for _, filt := range *f {
-		tf := chess.NewTagFilter(filt)
+		tf := pgn.NewTagFilter(filt)
 		if validTag(tf) {
 			filts = append(filts, tf)
 		}
 	}
 	return filts
 }
-func validTag(t chess.TagFilter) bool {
+
+func validTag(t pgn.TagFilter) bool {
 	return t.Tag != "" && t.Operator != "" && t.Operand != ""
 }
 
-func openPGNs(pgns []string) ([]*chess.PGN, error) {
-	var r []*chess.PGN
+func openPGNs(pgns []string) ([]*pgn.PGN, error) {
+	var r []*pgn.PGN
 	for _, filename := range pgns {
 		f, err := os.Open(filename)
 		if err != nil {
 			return nil, err
 		}
-		pgn, err := chess.ReadPGN(f)
+		pgn, err := pgn.Open(f)
 		if err != nil {
 			return nil, err
 		}
