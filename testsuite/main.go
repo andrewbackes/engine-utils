@@ -1,10 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/andrewbackes/chess/engines"
 	"github.com/andrewbackes/chess/epd"
 	"os"
+	"time"
 )
 
 func usage() {
@@ -12,13 +14,23 @@ func usage() {
 }
 
 func main() {
-	if len(os.Args) < 3 {
+	var timeout, outfile string
+	flag.StringVar(&timeout, "t", "24h", "timeout for each test position")
+	flag.StringVar(&outfile, "o", "results.txt", "output file for results")
+	flag.Parse()
+	fmt.Println(flag.Args())
+	if len(flag.Args()) < 0 {
 		usage()
 		os.Exit(1)
 	}
-	epds := openEpd(os.Args[1])
-	engine := openEngine(os.Args[2])
-	run(epds, engine)
+	timeoutDur, err := time.ParseDuration(timeout)
+	if err != nil {
+		fmt.Println("could not parse timeout")
+		os.Exit(1)
+	}
+	epds := openEpd(flag.Args()[0])
+	engine := openEngine(flag.Args()[1])
+	run(epds, engine, timeoutDur)
 }
 
 func openEngine(engineFilename string) engines.Engine {
