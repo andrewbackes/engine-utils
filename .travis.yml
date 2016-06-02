@@ -14,3 +14,17 @@ install:
 script:
   - ./test.sh
   - goveralls -coverprofile=total.coverprofile -service=travis-ci -repotoken $COVERALLS_TOKEN
+
+before_deploy: ./build.sh
+
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TOKEN"
+  file:
+      - "releases/engine-utils-linux64.tar.gz"
+      - "releases/engine-utils-mac64.tar.gz"
+      - "releases/engine-utils-win386.zip"
+      - "releases/engine-utils-win64.zip"
+  skip_cleanup: true
+  on:
+    tags: true
