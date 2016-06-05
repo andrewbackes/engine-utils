@@ -55,7 +55,8 @@ func openEpd(epdFilename string) []*epd.EPD {
 	if err != nil {
 		fmt.Println("Could not open", epdFilename)
 	}
-	epds, err := epd.Open(epdFile)
+	defer epdFile.Close()
+	epds, err := epd.Read(epdFile)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

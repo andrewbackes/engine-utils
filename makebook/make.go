@@ -69,7 +69,8 @@ func openPGNs(pgns []string) ([]*pgn.PGN, error) {
 		if err != nil {
 			return nil, err
 		}
-		pgn, err := pgn.Open(f)
+		defer f.Close()
+		pgn, err := pgn.Read(f)
 		if err != nil {
 			return nil, err
 		}
